@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAPA Paper Wallet Generator</title>
+    <style>
+        body {
+            background: #f7f7f7;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #222;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 480px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+            padding: 32px 24px 24px 24px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 0.2em;
+            color: #1976d2;
+        }
+        .header p {
+            color: #555;
+            font-size: 1em;
+        }
+        .input-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+        .input-row input[type="number"] {
+            width: 100px;
+            padding: 6px 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1em;
+        }
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+        button {
+            background: #1976d2;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #1256a0;
+        }
+        .wallet-info {
+            background: #f3f6fa;
+            border-radius: 8px;
+            padding: 18px 14px;
+            margin-bottom: 18px;
+        }
+        .wallet-info label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+            margin-bottom: 2px;
+        }
+        .wallet-info .field-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        .wallet-info .value {
+            font-family: monospace;
+            font-size: 0.98em;
+            background: #fff;
+            border-radius: 4px;
+            padding: 2px 6px;
+            word-break: break-all;
+        }
+        .qrs {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 18px;
+        }
+        .qrs canvas {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .status {
+            margin-bottom: 12px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 1em;
+            display: none;
+        }
+        .status.success { background: #e8f5e9; color: #388e3c; }
+        .status.error { background: #ffebee; color: #c62828; }
+        .status.loading { background: #e3f2fd; color: #1976d2; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>DAPA Paper Wallet</h1>
+            <p>Generate a secure, printable wallet for the DAPA blockchain.</p>
+        </div>
+        <div class="input-row">
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" min="0" step="any" placeholder="0.0">
+        </div>
+        <div class="actions">
+            <button id="generateBtn">Generate Wallet</button>
+            <button id="displayBtn">Display</button>
+            <button id="downloadBtn">Download</button>
+        </div>
+        <div id="status" class="status"></div>
+        <div class="wallet-info" id="walletInfo" style="display:none;">
+            <div class="field-row"><label>Address:</label> <span class="value" id="walletAddress"></span> <button class="copy-btn" data-copy="walletAddress">Copy</button></div>
+            <div class="field-row"><label>Public Key:</label> <span class="value" id="publicKey"></span> <button class="copy-btn" data-copy="publicKey">Copy</button></div>
+            <div class="field-row"><label>Private Key:</label> <span class="value" id="privateKey"></span> <button class="copy-btn" data-copy="privateKey">Copy</button></div>
+            <div class="field-row"><label>WIF:</label> <span class="value" id="privateKeyWIF"></span> <button class="copy-btn" data-copy="privateKeyWIF">Copy</button></div>
+            <div class="qrs">
+                <div>
+                    <label style="text-align:center;display:block;">Address QR</label>
+                    <div id="addressQR"></div>
+                </div>
+                <div>
+                    <label style="text-align:center;display:block;">Private Key QR</label>
+                    <div id="privateKeyQR"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./js/pkg/wallet_core.js"></script>
+    <script type="module" src="./js/app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+</body>
+</html>
