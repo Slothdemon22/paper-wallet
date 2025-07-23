@@ -6,207 +6,489 @@
     <title>DAPA Paper Wallet Generator</title>
     <style>
         :root {
-            --accent: #1976d2;
-            --accent-dark: #1256a0;
-            --bg: #f4f6fb;
-            --card-bg: #fff;
-            --border: #e3e8ee;
-            --text: #222;
-            --muted: #888;
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #059669;
+            --secondary-dark: #047857;
+            --bg: #fafbfc;
+            --card-bg: #ffffff;
+            --border: #e5e7eb;
+            --border-light: #f3f4f6;
+            --text: #111827;
+            --text-secondary: #6b7280;
+            --text-muted: #9ca3af;
+            --success: #10b981;
+            --error: #ef4444;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
         }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             background: var(--bg);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             color: var(--text);
             margin: 0;
-            padding: 0;
+            padding: 20px;
             min-height: 100vh;
+            line-height: 1.6;
         }
+
         .container {
-            max-width: 420px;
-            margin: 48px auto 0 auto;
+            max-width: 600px;
+            margin: 0 auto;
             background: var(--card-bg);
-            border-radius: 18px;
-            box-shadow: 0 6px 32px rgba(25, 118, 210, 0.08);
-            padding: 36px 28px 28px 28px;
-            border: 1.5px solid var(--border);
+            border-radius: 16px;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .header {
+            background: var(--primary);
+            color: white;
+            padding: 40px 32px;
             text-align: center;
-            margin-bottom: 28px;
+            position: relative;
+            overflow: hidden;
         }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+            pointer-events: none;
+        }
+
+        .header-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
         .header h1 {
-            font-size: 2.1em;
-            margin-bottom: 0.2em;
-            color: var(--accent);
-            letter-spacing: 1px;
+            font-size: 32px;
+            font-weight: 700;
+            margin: 0 0 12px 0;
+            letter-spacing: -0.025em;
+            position: relative;
+            z-index: 1;
         }
+
         .header p {
-            color: var(--muted);
-            font-size: 1.08em;
+            font-size: 16px;
+            opacity: 0.9;
+            margin: 0;
+            font-weight: 400;
+            position: relative;
+            z-index: 1;
+            max-width: 400px;
+            margin: 0 auto;
         }
+
+        .content {
+            padding: 48px 40px;
+        }
+
         .input-row {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 18px;
+            gap: 12px;
+            margin-bottom: 32px;
         }
+
         .input-row label {
-            font-weight: 500;
-            font-size: 1.05em;
-        }
-        .input-row input[type="number"] {
-            width: 110px;
-            padding: 7px 12px;
-            border: 1.5px solid var(--border);
-            border-radius: 7px;
-            font-size: 1.08em;
-            background: #f9fbfd;
+            font-weight: 600;
+            font-size: 14px;
             color: var(--text);
+            letter-spacing: 0.025em;
         }
+
+        .input-row input[type="number"] {
+            width: 140px;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 16px;
+            background: var(--card-bg);
+            color: var(--text);
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .input-row input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgb(37 99 235 / 0.1);
+        }
+
         .actions {
             display: flex;
-            gap: 12px;
-            margin-bottom: 22px;
+            gap: 16px;
+            margin-bottom: 32px;
         }
+
         button {
-            background: var(--accent);
-            color: #fff;
+            background: var(--primary);
+            color: white;
             border: none;
-            border-radius: 7px;
-            padding: 10px 20px;
-            font-size: 1.08em;
-            font-weight: 500;
+            border-radius: 16px;
+            padding: 24px 48px;
+            font-size: 20px;
+            font-weight: 700;
             cursor: pointer;
-            transition: background 0.18s;
-            box-shadow: 0 2px 8px rgba(25, 118, 210, 0.04);
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-lg);
+            letter-spacing: 0.025em;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+            flex: 1;
+            min-height: 64px;
         }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: left 0.5s ease;
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
         button:hover {
-            background: var(--accent-dark);
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl);
         }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .status {
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 32px;
+            display: none;
+            border: 1px solid;
+        }
+
+        .status.success {
+            background: rgb(16 185 129 / 0.1);
+            color: var(--success);
+            border-color: rgb(16 185 129 / 0.2);
+        }
+
+        .status.error {
+            background: rgb(239 68 68 / 0.1);
+            color: var(--error);
+            border-color: rgb(239 68 68 / 0.2);
+        }
+
+        .status.loading {
+            background: rgb(37 99 235 / 0.1);
+            color: var(--primary);
+            border-color: rgb(37 99 235 / 0.2);
+        }
+
         .wallet-info {
-            background: #f8fafc;
-            border-radius: 10px;
-            padding: 20px 16px 14px 16px;
-            margin-bottom: 18px;
-            border: 1.2px solid var(--border);
-            box-shadow: 0 2px 8px rgba(25, 118, 210, 0.03);
+            background: var(--border-light);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 32px;
+            border: 1px solid var(--border);
+            animation: fadeIn 0.5s ease;
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .wallet-info label {
             font-weight: 600;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
             display: block;
-            margin-top: 10px;
-            margin-bottom: 2px;
-            color: var(--accent-dark);
-            font-size: 1em;
+            margin-top: 20px;
         }
-        .wallet-info .field-row {
+
+        .wallet-info label:first-child {
+            margin-top: 0;
+        }
+
+        .field-row {
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
+            gap: 12px;
+            margin-bottom: 20px;
         }
-        .wallet-info .value {
-            font-family: monospace;
-            font-size: 1.01em;
-            background: #fff;
-            border-radius: 4px;
-            padding: 2px 7px;
+
+        .field-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .value {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 13px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 16px;
             word-break: break-all;
-            border: 1px solid #e3e8ee;
+            flex: 1;
+            color: var(--text);
+            line-height: 1.4;
         }
+
         .copy-btn {
-            background: #e3e8ee;
-            color: var(--accent-dark);
-            border: none;
-            border-radius: 5px;
-            padding: 3px 10px;
-            font-size: 0.98em;
-            margin-left: 2px;
+            background: white;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-size: 12px;
+            font-weight: 500;
             cursor: pointer;
-            transition: background 0.15s;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            text-transform: none;
         }
+
         .copy-btn:hover {
-            background: var(--accent);
-            color: #fff;
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
         }
+
         .qrs {
             display: flex;
-            gap: 18px;
+            gap: 32px;
             justify-content: center;
-            margin-top: 18px;
+            margin-top: 32px;
         }
-        .qrs canvas, .qrs img {
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(25, 118, 210, 0.04);
-            border: 1px solid #e3e8ee;
+
+        .qrs label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            text-align: center;
+            display: block;
         }
-        .status {
-            margin-bottom: 14px;
-            padding: 9px 13px;
-            border-radius: 7px;
-            font-size: 1.08em;
-            display: none;
+
+        .qrs > div {
+            text-align: center;
         }
-        .status.success { background: #e8f5e9; color: #388e3c; }
-        .status.error { background: #ffebee; color: #c62828; }
-        .status.loading { background: #e3f2fd; color: #1976d2; }
-        @media (max-width: 600px) {
-            .container { padding: 10px; }
-            .wallet-info { padding: 10px 4px; }
+
+        .qrs canvas,
+        .qrs img {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 12px;
+            }
+            
+            .container {
+                border-radius: 12px;
+                max-width: 100%;
+            }
+            
+            .header {
+                padding: 32px 24px;
+            }
+            
+            .header h1 {
+                font-size: 28px;
+            }
+            
+            .content {
+                padding: 36px 28px;
+            }
+            
+            .wallet-info {
+                padding: 24px;
+            }
+            
+            .qrs {
+                flex-direction: column;
+                align-items: center;
+                gap: 24px;
+            }
+            
+            .field-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+
+            button {
+                padding: 20px 32px;
+                font-size: 18px;
+                min-height: 60px;
+            }
+
+            .input-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+
+            .input-row input[type="number"] {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
+            <div class="header-badge">Secure • Offline • Private</div>
             <h1>DAPA Paper Wallet</h1>
-            <p>Generate a secure, printable wallet for the DAPA blockchain.</p>
+            <p>Generate a secure, printable wallet for the DAPA blockchain</p>
         </div>
-        <div class="input-row">
-            <label for="amount">Amount:</label>
-            <input type="number" id="amount" min="0" step="any" placeholder="0.0">
-        </div>
-        <div class="actions">
-            <button id="generateBtn">Generate Wallet</button>
-        </div>
-        <div id="status" class="status"></div>
-        <div class="wallet-info" id="walletInfo" style="display:none;">
-            <div class="field-row"><label>Address:</label> <span class="value" id="walletAddress"></span> <button class="copy-btn" data-copy="walletAddress">Copy</button></div>
-            <div class="field-row"><label>Public Key:</label> <span class="value" id="publicKey"></span> <button class="copy-btn" data-copy="publicKey">Copy</button></div>
-            <div class="field-row"><label>Private Key:</label> <span class="value" id="privateKey"></span> <button class="copy-btn" data-copy="privateKey">Copy</button></div>
-            <div class="field-row"><label>WIF:</label> <span class="value" id="privateKeyWIF"></span> <button class="copy-btn" data-copy="privateKeyWIF">Copy</button></div>
-            <div class="qrs">
-                <div>
-                    <label style="text-align:center;display:block;">Address QR</label>
-                    <div id="addressQR"></div>
+
+        <div class="content">
+            <div class="input-row">
+                <label for="amount">Amount:</label>
+                <input type="number" id="amount" min="0" step="any" placeholder="0.0">
+            </div>
+
+            <div class="actions">
+                <button id="generateBtn">Generate Wallet</button>
+            </div>
+
+            <div id="status" class="status"></div>
+
+            <div class="wallet-info" id="walletInfo" style="display:none;">
+                <div class="field-row"><label>Address:</label> <span class="value" id="walletAddress"></span> <button class="copy-btn" data-copy="walletAddress">Copy</button></div>
+                <div class="field-row"><label>Public Key:</label> <span class="value" id="publicKey"></span> <button class="copy-btn" data-copy="publicKey">Copy</button></div>
+                <div class="field-row"><label>Private Key:</label> <span class="value" id="privateKey"></span> <button class="copy-btn" data-copy="privateKey">Copy</button></div>
+                <div class="field-row"><label>WIF:</label> <span class="value" id="privateKeyWIF"></span> <button class="copy-btn" data-copy="privateKeyWIF">Copy</button></div>
+                <div class="qrs">
+                    <div>
+                        <label style="text-align:center;display:block;">Address QR</label>
+                        <div id="addressQR"></div>
+                    </div>
+                    <div>
+                        <label style="text-align:center;display:block;">Private Key QR</label>
+                        <div id="privateKeyQR"></div>
+                    </div>
                 </div>
-                <div>
-                    <label style="text-align:center;display:block;">Private Key QR</label>
-                    <div id="privateKeyQR"></div>
-                </div>
+                <button class="download-btn" id="downloadBtn" style="margin-top:24px;width:100%;font-size:1.1em;display:flex;align-items:center;justify-content:center;gap:10px;">
+                    <svg viewBox="0 0 24 24" width="20" height="20"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Download Wallet Info
+                </button>
             </div>
         </div>
     </div>
+
     <script src="./js/pkg/wallet_core.js"></script>
     <script type="module" src="./js/app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
     <script>
-    // Copy to clipboard logic for all copy buttons
-    document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('.copy-btn').forEach(btn => {
-            btn.onclick = (e) => {
-                const field = btn.getAttribute('data-copy');
-                const value = document.getElementById(field).textContent;
-                if (!value) return;
-                navigator.clipboard.writeText(value).then(() => {
-                    btn.textContent = 'Copied!';
-                    setTimeout(() => { btn.textContent = 'Copy'; }, 1200);
-                });
-            };
+        // Copy to clipboard and download logic for all copy buttons
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.copy-btn').forEach(btn => {
+                btn.onclick = (e) => {
+                    const field = btn.getAttribute('data-copy');
+                    const value = document.getElementById(field).textContent;
+                    if (!value) return;
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(value).then(() => {
+                            btn.textContent = 'Copied!';
+                            setTimeout(() => { btn.textContent = 'Copy'; }, 1200);
+                        });
+                    } else {
+                        // Fallback: select and copy using execCommand
+                        const tempInput = document.createElement('input');
+                        tempInput.value = value;
+                        document.body.appendChild(tempInput);
+                        tempInput.select();
+                        try {
+                            document.execCommand('copy');
+                            btn.textContent = 'Copied!';
+                            setTimeout(() => { btn.textContent = 'Copy'; }, 1200);
+                        } catch (err) {
+                            alert('Copy not supported in this browser. Please copy manually.');
+                        }
+                        document.body.removeChild(tempInput);
+                    }
+                };
+            });
+            // Download button logic
+            const downloadBtn = document.getElementById('downloadBtn');
+            if (downloadBtn) {
+                downloadBtn.onclick = () => {
+                    const address = document.getElementById('walletAddress').textContent;
+                    const pubkey = document.getElementById('publicKey').textContent;
+                    const privkey = document.getElementById('privateKey').textContent;
+                    const wif = document.getElementById('privateKeyWIF').textContent;
+                    const amount = document.getElementById('amount').value;
+                    const content = `DAPA Paper Wallet\nAmount: ${amount}\nAddress: ${address}\nPublic Key: ${pubkey}\nPrivate Key: ${privkey}\nWIF: ${wif}`;
+                    const blob = new Blob([content], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'dapa-paper-wallet.txt';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                };
+            }
         });
-    });
+        
     </script>
 </body>
 </html>
