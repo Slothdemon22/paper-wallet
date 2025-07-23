@@ -389,19 +389,32 @@
             }
         }
     </style>
+    <style>
+    #modalAmountClose:hover {
+        background: #f3f4f6;
+    }
+    #modalAmountClose svg path {
+        transition: stroke 0.15s;
+    }
+    #modalAmountClose:hover svg path {
+        stroke: #2563eb;
+    }
+    </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
+            <img src="dapa.png" alt="DAPA Paper Wallet Logo"
+                 style="height:54px;margin-bottom:16px;display:block;margin-left:auto;margin-right:auto;opacity:1;box-shadow:0 2px 12px rgba(0,0,0,0.18);background:transparent;">
             <div class="header-badge">Secure • Offline • Private</div>
             <h1>DAPA Paper Wallet</h1>
-            <p>Generate a secure, printable wallet for the DAPA blockchain</p>
+            <p>Generate a secure, printable wallet for the DAPA blockchain with complete offline security</p>
         </div>
 
         <div class="content">
-            <div class="input-row">
-                <label for="amount">Amount:</label>
-                <input type="number" id="amount" min="0" step="any" placeholder="0.0">
+            <div class="input-group" style="position:relative;">
+                <button id="amountBtn" type="button" class="generate-btn" style="width:auto;padding:12px 24px;font-size:1em;margin-bottom:18px;margin-top:8px;">Add Amount</button>
+                <span id="amountDisplay" style="display:inline-block;margin-left:12px;color:var(--primary-dark);font-weight:600;"></span>
             </div>
 
             <div class="actions">
@@ -432,12 +445,35 @@
             </div>
         </div>
     </div>
+    <!-- Modal for wallet amount -->
+    <div id="amountModal" style="display:none;position:fixed;z-index:1000;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.25);align-items:center;justify-content:center;">
+      <div style="background:#fff;padding:32px 24px 24px 24px;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.18);max-width:90vw;width:340px;position:relative;">
+         <button id="modalAmountClose" aria-label="Close"
+            style="position:absolute;top:10px;right:12px;background:transparent;border:none;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.15em;color:#2563eb;transition:background 0.15s, color 0.15s;padding:0;line-height:1;box-shadow:none;">
+           &times;
+         </button>
+         <style>
+         #modalAmountClose { box-shadow: none !important; }
+         #modalAmountClose:hover {
+              background: #e5e7eb;
+              color: #2563eb;
+              box-shadow: none !important;
+         }
+         </style>
+        <h2 style="margin-top:0;font-size:1.2em;color:#2563eb;">Enter Amount</h2>
+        <input id="modalAmountInput" type="number" min="0" step="any" placeholder="0.0"
+               style="width:100%;padding:14px 12px;font-size:1.1em;border:1.5px solid #e5e7eb;border-radius:8px;margin-bottom:18px;">
+        <div style="display:flex;gap:12px;justify-content:flex-end;">
+          <button id="modalAmountOk" style="background:#2563eb;color:#fff;padding:10px 18px;border:none;border-radius:8px;font-weight:600;cursor:pointer;">OK</button>
+        </div>
+      </div>
+    </div>
 
     <script src="./js/pkg/wallet_core.js"></script>
     <script type="module" src="./js/app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
     <script>
-        // Copy to clipboard and download logic for all copy buttons
+        // Copy to clipboard, download, and amount modal logic
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.copy-btn').forEach(btn => {
                 btn.onclick = (e) => {
@@ -474,7 +510,7 @@
                     const pubkey = document.getElementById('publicKey').textContent;
                     const privkey = document.getElementById('privateKey').textContent;
                     const wif = document.getElementById('privateKeyWIF').textContent;
-                    const amount = document.getElementById('amount').value;
+                    const amount = amountDisplay.textContent.replace('Amount: ','');
                     const content = `DAPA Paper Wallet\nAmount: ${amount}\nAddress: ${address}\nPublic Key: ${pubkey}\nPrivate Key: ${privkey}\nWIF: ${wif}`;
                     const blob = new Blob([content], { type: 'text/plain' });
                     const url = URL.createObjectURL(blob);
@@ -487,8 +523,39 @@
                     URL.revokeObjectURL(url);
                 };
             }
+            // Amount modal logic
+            const amountBtn = document.getElementById('amountBtn');
+            const amountDisplay = document.getElementById('amountDisplay');
+            const modal = document.getElementById('amountModal');
+            const modalInput = document.getElementById('modalAmountInput');
+            const modalOk = document.getElementById('modalAmountOk');
+            const modalClose = document.getElementById('modalAmountClose');
+            function showAmountModal() {
+                modal.style.display = 'flex';
+                modalInput.value = amountDisplay.textContent.replace('Amount: ','');
+                setTimeout(() => { modalInput.focus(); }, 100);
+            }
+            function hideAmountModal() {
+                modal.style.display = 'none';
+            }
+            amountBtn.addEventListener('click', showAmountModal);
+            modalOk.onclick = () => {
+                amountDisplay.textContent = modalInput.value ? `Amount: ${modalInput.value}` : '';
+                hideAmountModal();
+            };
+            modalClose.onclick = hideAmountModal;
+            modalInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    amountDisplay.textContent = modalInput.value ? `Amount: ${modalInput.value}` : '';
+                    hideAmountModal();
+                } else if (e.key === 'Escape') {
+                    hideAmountModal();
+                }
+            });
+            modal.addEventListener('mousedown', (e) => {
+                if (e.target === modal) hideAmountModal();
+            });
         });
-        
     </script>
 </body>
 </html>
