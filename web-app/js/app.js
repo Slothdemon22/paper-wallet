@@ -54,6 +54,7 @@ async function generateNewWallet() {
     try {
         updateStatus('Generating secure random wallet...', 'loading');
         const wallet = wasm_bindgen.generate_wallet();
+        document.getElementById('walletSeed').textContent = wallet.seed;
         document.getElementById('walletAddress').textContent = wallet.address;
         document.getElementById('privateKey').textContent = wallet.private_key;
         document.getElementById('publicKey').textContent = wallet.public_key;
