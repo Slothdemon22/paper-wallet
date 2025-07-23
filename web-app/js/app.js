@@ -9,7 +9,8 @@ async function initWasm() {
         if (typeof wasm_bindgen === 'undefined') {
             throw new Error('wasm_bindgen not available. Make sure wallet_core.js is loaded.');
         }
-        wasmModule = await wasm_bindgen('./js/pkg/wallet_core_bg.wasm');
+        // Modern initialization: pass an object with 'url' property
+        wasmModule = await wasm_bindgen({ url: './js/pkg/wallet_core_bg.wasm' });
         updateStatus('DAPA Wallet Generator ready! 🚀', 'success');
     } catch (error) {
         updateStatus('Failed to load wallet generator. Please refresh the page.', 'error');
@@ -42,6 +43,13 @@ function generateQRCode(elementId, text) {
     }
 }
 
+// Helper to safely set textContent
+function setText(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+    else console.warn(`Element with id '${id}' not found.`);
+}
+
 // Generate new wallet
 async function generateNewWallet() {
     if (!wasmModule) {
@@ -54,16 +62,10 @@ async function generateNewWallet() {
     try {
         updateStatus('Generating secure random wallet...', 'loading');
         const wallet = wasm_bindgen.generate_wallet();
-        document.getElementById('walletSeed').textContent = wallet.seed;
-        document.getElementById('walletAddress').textContent = wallet.address;
-        document.getElementById('privateKey').textContent = wallet.private_key;
-        document.getElementById('publicKey').textContent = wallet.public_key;
-        try {
-            const wifKey = wasm_bindgen.private_key_to_wif(wallet.private_key);
-            document.getElementById('privateKeyWIF').textContent = wifKey;
-        } catch (error) {
-            document.getElementById('privateKeyWIF').textContent = 'WIF generation failed';
-        }
+        setText('walletSeed', wallet.seed);
+        setText('walletAddress', wallet.address);
+        setText('privateKey', wallet.private_key);
+        setText('publicKey', wallet.public_key);
         generateQRCode('addressQR', wallet.address);
         generateQRCode('privateKeyQR', wallet.private_key);
         document.getElementById('walletInfo').style.display = 'block';
